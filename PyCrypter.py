@@ -4,13 +4,9 @@
 #this will work for what seems like all files I throw at it except big files (a momory error is thrown)
 #I was able to encrypt short videos (5Mbs) picures and text documents with ease
 
-#******************************************************************************************
-#
-#fix memory issue with large files
-#-from research (http://stackoverflow.com/questions/4441947/why-python-memory-error-with-list-append-lots-of-ram-left)
-#  I have found I may need a 64bit version of python
-#
-#******************************************************************************************
+#****************************************TO DO***********************************************
+#fix memory error
+#********************************************************************************************
 
 import base64
 import os
@@ -33,7 +29,7 @@ class PyCrypter:
 		else:
 			self.master = master
 
-	#generates a semi secure password from a weak user password
+	#generates a more secure password from a weak user password
 	def genPassword(self, password, salt = None):
 		kdf = PBKDF2HMAC(algorithm = hashes.SHA256(), length = 32, salt = salt, iterations = 100000, backend = default_backend())
 		return base64.urlsafe_b64encode(kdf.derive(password.encode()))
@@ -161,7 +157,6 @@ class PyCrypter:
 
 	#gets the original name of the file and the extension
 	def getNameEnd(self, filename):
-		#this may cause problems when we use other function to get file names in the gui
 		split_list = filename.rsplit("/")
 		split_list.reverse()
 		return split_list[0]
