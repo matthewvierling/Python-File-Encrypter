@@ -1,4 +1,6 @@
-# Python-File-Encrypter
+# Python-File-Encrypter 
+
+NOTE: this is for python 3
 
 This is a file encryption script that will encrypt any type of file. 
 
