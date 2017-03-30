@@ -30,13 +30,13 @@ class PyCrypter:
 			self.master = master
 
 	#generates a more secure password from a weak user password
-	def genPassword(self, password, salt = None):
+	def gen_password(self, password, salt = None):
 		kdf = PBKDF2HMAC(algorithm = hashes.SHA256(), length = 32, salt = salt, iterations = 100000, backend = default_backend())
 		return base64.urlsafe_b64encode(kdf.derive(password.encode()))
 
 	#overwrites the actual data with random data and then deletes the file path
 	#this will not work on SSD drives only HDD and even then it's not that secure
-	def deleteFile(self, filename, passes = 2):
+	def delete_file(self, filename, passes = 2):
 		with open(filename, 'rb+') as df:
 			info = os.stat(filename)
 			length = info.st_size
@@ -48,7 +48,7 @@ class PyCrypter:
 
 		os.remove(df.name)
 
-	def encryptFile(self):
+	def encrypt_file(self):
 
 		file = askopenfile(parent = self.master, title = "select file to encrypt.")
 
@@ -73,7 +73,7 @@ class PyCrypter:
 			original_bytes = of.read()
 
 		#gets the original name of the file and encodes it
-		original_name = self.getNameEnd(file.name)
+		original_name = self.get_name_end(file.name)
 		original_name = original_name.rstrip('\r\n') + '\n'
 		original_name_bytes = original_name.encode()
 
@@ -85,7 +85,7 @@ class PyCrypter:
 			new_byte_data = tf.read()
 
 		#encrypts the data
-		f = Fernet(self.genPassword(password, salt))
+		f = Fernet(self.gen_password(password, salt))
 		encrypted_data = f.encrypt(new_byte_data)
 
 		fname = asksaveasfilename(parent = self.master, title = "give name to encrypted file.", defaultextension = ".enc", filetypes = [("Encrypted File", ".enc")])
@@ -100,7 +100,7 @@ class PyCrypter:
 
 		return
 
-	def decryptFile(self):
+	def decrypt_file(self):
 
 		file = askopenfile(parent = self.master, title = "select file to decrypt", filetypes = [("Encrypted File", ".enc")])
 
@@ -125,7 +125,7 @@ class PyCrypter:
 			encrypted_data = inf.read()
 
 		#decrypts the data
-		f = Fernet(self.genPassword(password, salt))
+		f = Fernet(self.gen_password(password, salt))
 		byte_data = f.decrypt(encrypted_data)
 
 		#writes decrypted bytes to temp file then reads the original name at the top and the data to put in the new file
@@ -142,7 +142,7 @@ class PyCrypter:
 			data = tf.read()
 		
 		#we have an error here for some reason we can't get the extension added on tho the end
-		fname = asksaveasfilename(parent = self.master, title = "choose name to decrypted file", defaultextension = self.getFileType(original_name), filetypes = [("Original File Type", self.getFileType(original_name))],initialfile = self.getFileName(original_name))
+		fname = asksaveasfilename(parent = self.master, title = "choose name to decrypted file", defaultextension = self.get_file_type(original_name), filetypes = [("Original File Type", self.get_file_type(original_name))],initialfile = self.get_file_name(original_name))
 
 		#handles cancel if cancel is pressed in asksaveasfile
 		if fname == '':
@@ -156,19 +156,19 @@ class PyCrypter:
 		return
 
 	#gets the original name of the file and the extension
-	def getNameEnd(self, filename):
+	def get_name_end(self, filename):
 		split_list = filename.rsplit("/")
 		split_list.reverse()
 		return split_list[0]
 
 	#returns the files original extension
-	def getFileType(self, filename):
+	def get_file_type(self, filename):
 		split_list = filename.rsplit(".")
 		split_list.reverse()
 		return "." + split_list[0]
 
 	#returns the original file name without the file extension
-	def getFileName(self, filename):
+	def get_file_name(self, filename):
 		split_list = filename.rsplit(".")
 		return split_list[0]
 

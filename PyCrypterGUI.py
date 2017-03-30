@@ -16,22 +16,22 @@ class PyCrypterGUI:
 		frame.pack()
 		
 
-		self.encryptButton = Button(frame, text = "Encrypt File", command = self.encryptButtonPressed, bg = "green")
-		self.encryptButton.pack(side = LEFT)
+		self.encrypt_button = Button(frame, text = "Encrypt File", command = self.encrypt_button_pressed, bg = "green")
+		self.encrypt_button.pack(side = LEFT)
 
-		self.decryptButton = Button(frame, text = "Decrypt File", command = self.decryptButtonPressed, bg = "blue")
-		self.decryptButton.pack(side = LEFT)
+		self.decrypt_button = Button(frame, text = "Decrypt File", command = self.decrypt_button_pressed, bg = "blue")
+		self.decrypt_button.pack(side = LEFT)
 
-		self.secureDelete = Button(frame, text = "Delete File", command = self.secureDeleteButtonPressed, bg = "red")
-		self.secureDelete.pack(side = LEFT)
+		self.secure_delete = Button(frame, text = "Delete File", command = self.secure_delete_button_pressed, bg = "red")
+		self.secure_delete.pack(side = LEFT)
 
-	def encryptButtonPressed(self):
+	def encrypt_button_pressed(self):
 		self.cryptor.encryptFile()
 
-	def decryptButtonPressed(self):
+	def decrypt_button_pressed(self):
 		self.cryptor.decryptFile()
 
-	def secureDeleteButtonPressed(self):
+	def secure_delete_button_pressed(self):
 		file = askopenfile(parent = self.master, title = "select file to delete")
 
 		#handles a cancel in askopenfile
