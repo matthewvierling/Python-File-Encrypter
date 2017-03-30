@@ -26,10 +26,10 @@ class PyCrypterGUI:
 		self.secure_delete.pack(side = LEFT)
 
 	def encrypt_button_pressed(self):
-		self.cryptor.encryptFile()
+		self.cryptor.encrypt_file()
 
 	def decrypt_button_pressed(self):
-		self.cryptor.decryptFile()
+		self.cryptor.decrypt_file()
 
 	def secure_delete_button_pressed(self):
 		file = askopenfile(parent = self.master, title = "select file to delete")
@@ -39,7 +39,7 @@ class PyCrypterGUI:
 			return
 
 		file.close()
-		self.cryptor.deleteFile(file.name, 5)
+		self.cryptor.delete_file(file.name, 5)
 
 
 
