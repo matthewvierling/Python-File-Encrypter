@@ -82,6 +82,7 @@ class PyCrypter:
 
 		#writes the encrypted data to a .enc file
 		with open(fname, 'wb') as enc_file:
+			enc_file.seek(0)
 			#writes salt to top of file
 			enc_file.write(salt + '\n'.encode())
 
@@ -92,6 +93,7 @@ class PyCrypter:
 
 			#opens original file as bytes
 			with open(file.name, 'rb') as original_file:
+				original_file.seek(0)
 				for line in original_file:
 					enc_file.write(fernet_obj.encrypt(original_file.readline()))
 
