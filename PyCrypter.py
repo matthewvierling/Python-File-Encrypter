@@ -2,7 +2,8 @@
 #python file encrypter using python's cryptography module and tkinter
 
 #this will work for what seems like all files I throw at it except big files (a momory error is thrown)
-#I was able to encrypt short videos (5Mbs) picures and text documents with ease
+#I was able to encrypt short videos (120Mbs) picures and text documents with ease
+#update: I found that encrypting a 500MB file will use roughly 5GB of Memory. I will have to encrypt and write smaller pieces of data.
 
 #****************************************TO DO***********************************************
 #fix memory error
@@ -79,14 +80,19 @@ class PyCrypter:
 
 		#opens a temp file to add the name to the top of the file, then reads that data to encrypt
 		with TemporaryFile(mode = 'rb+') as tf:
+			print("Flag: encrypt, inside tempfile") #flag not needed ******************************************************************************************************
 			tf.seek(0)
 			tf.write(original_name_bytes + original_bytes)
 			tf.seek(0)
 			new_byte_data = tf.read()
 
+		print("Flag: encrypt, after tempfile") #flag not needed ******************************************************************************************************
+
 		#encrypts the data
 		f = Fernet(self.gen_password(password, salt))
 		encrypted_data = f.encrypt(new_byte_data)
+
+		print("Flag: encrypt, after encrypted_data") #flag not needed ******************************************************************************************************
 
 		fname = asksaveasfilename(parent = self.master, title = "give name to encrypted file.", defaultextension = ".enc", filetypes = [("Encrypted File", ".enc")])
 
