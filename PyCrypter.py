@@ -7,6 +7,8 @@
 
 #****************************************TO DO***********************************************
 #fix memory error
+#
+#currently edited the encrypt function and need to change the decrypt to read line by line
 #********************************************************************************************
 
 import base64
@@ -68,41 +70,32 @@ class PyCrypter:
 		#this was causing errors when it goes to read the line with the salt on it--it was only getting part of it because of the escape sequence
 		salt = salt.replace('\n'.encode(), ''.encode())
 
-		#gets the byte data from the original file
-		with open(file.name, 'rb') as of:
-			of.seek(0)
-			original_bytes = of.read()
-
-		#gets the original name of the file and encodes it
-		original_name = self.get_name_end(file.name)
-		original_name = original_name.rstrip('\r\n') + '\n'
-		original_name_bytes = original_name.encode()
-
-		#opens a temp file to add the name to the top of the file, then reads that data to encrypt
-		with TemporaryFile(mode = 'rb+') as tf:
-			print("Flag: encrypt, inside tempfile") #flag not needed ******************************************************************************************************
-			tf.seek(0)
-			tf.write(original_name_bytes + original_bytes)
-			tf.seek(0)
-			new_byte_data = tf.read()
-
-		print("Flag: encrypt, after tempfile") #flag not needed ******************************************************************************************************
-
-		#encrypts the data
-		f = Fernet(self.gen_password(password, salt))
-		encrypted_data = f.encrypt(new_byte_data)
-
-		print("Flag: encrypt, after encrypted_data") #flag not needed ******************************************************************************************************
-
+		#ask where to save enc file
 		fname = asksaveasfilename(parent = self.master, title = "give name to encrypted file.", defaultextension = ".enc", filetypes = [("Encrypted File", ".enc")])
 
 		#handles cancel if cancel is pressed in asksaveasfile
 		if fname == '':
 			return
 
-		#writes the encrypted data to a .awesome file
-		with open(fname, 'wb') as awf:
-			awf.write(salt + '\n'.encode() + encrypted_data)
+		#creates fernet object
+		fernet_obj = Fernet(self.gen_password(password, salt))
+
+		#writes the encrypted data to a .enc file
+		with open(fname, 'wb') as enc_file:
+			#writes salt to top of file
+			enc_file.write(salt + '\n'.encode())
+
+			#gets the original name of the file, encodes it and writes it to the file after salt
+			original_name = self.get_name_end(file.name)
+			original_name = original_name.rstrip('\r\n') + '\n'
+			enc_file.write(fernet_obj.encrypt(original_name.encode()))
+
+			#opens original file as bytes
+			with open(file.name, 'rb') as original_file:
+				for line in original_file:
+					enc_file.write(fernet_obj.encrypt(original_file.readline()))
+
+		print("Done Encrypting")
 
 		return
 
